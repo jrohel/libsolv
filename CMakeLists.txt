@@ -39,7 +39,7 @@ OPTION (ENABLE_ZCHUNK_COMPRESSION "Build with zchunk compression support?" OFF)
 OPTION (WITH_SYSTEM_ZCHUNK "Use system zchunk library?" OFF)
 OPTION (WITH_LIBXML2  "Build with libxml2 instead of libexpat?" OFF)
 OPTION (WITHOUT_COOKIEOPEN "Disable the use of stdio cookie opens?" OFF)
-OPTION (WITH_OPENSSL "Use OpenSSL instead of internal implementation of hashes?" OFF)
+OPTION (WITH_OPENSSL "Use OpenSSL instead of internal implementation of hashes?" ON)
 
 include (GNUInstallDirs)
 message (STATUS "Libraries will be installed in ${CMAKE_INSTALL_FULL_LIBDIR}")
