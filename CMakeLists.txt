@@ -38,7 +38,7 @@ OPTION (ENABLE_ZSTD_COMPRESSION "Build with zstd compression support?" OFF)
 OPTION (ENABLE_ZCHUNK_COMPRESSION "Build with zchunk compression support?" OFF)
 OPTION (WITH_SYSTEM_ZCHUNK "Use system zchunk library?" OFF)
 OPTION (WITH_LIBXML2  "Build with libxml2 instead of libexpat?" OFF)
-OPTION (WITH_OPENSSL "Use OpenSSL instead of internal implementation of hashes?" OFF)
+OPTION (WITH_OPENSSL "Use OpenSSL instead of internal implementation of hashes?" ON)
 
 # Library
 IF (DEFINED LIB)
