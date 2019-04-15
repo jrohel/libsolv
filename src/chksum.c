@@ -15,7 +15,7 @@
 #include "util.h"
 #include "chksum.h"
 
-#ifdef WITH_OPENSSL
+#if HASH_LIB == USE_OPENSSL
 
 #include <openssl/md5.h>
 #include <openssl/sha.h>
@@ -42,6 +42,38 @@ typedef SHA512_CTX SHA384_CTX;
 #define solv_SHA512_Init(ctx) SHA512_Init(ctx)
 #define solv_SHA512_Update(ctx, data, len) SHA512_Update(ctx, data, len)
 #define solv_SHA512_Final(md, ctx) SHA512_Final(md, ctx)
+
+#elif HASH_LIB == USE_NETTLE
+
+#include <nettle/md5.h>
+#include <nettle/sha1.h>
+#include <nettle/sha2.h>
+
+typedef struct md5_ctx MD5_CTX;
+typedef struct sha1_ctx SHA1_CTX;
+typedef struct sha224_ctx SHA224_CTX;
+typedef struct sha256_ctx SHA256_CTX;
+typedef struct sha384_ctx SHA384_CTX;
+typedef struct sha512_ctx SHA512_CTX;
+
+#define solv_MD5_Init(ctx) md5_init(ctx)
+#define solv_MD5_Update(ctx, data, len) md5_update(ctx, len, data)
+#define solv_MD5_Final(md, ctx) md5_digest(ctx, MD5_DIGEST_SIZE, md)
+#define solv_SHA1_Init(ctx) sha1_init(ctx)
+#define solv_SHA1_Update(ctx, data, len) sha1_update(ctx, len, data)
+#define solv_SHA1_Final(ctx, md) sha1_digest(ctx, SHA1_DIGEST_SIZE, md)
+#define solv_SHA224_Init(ctx) sha224_init(ctx)
+#define solv_SHA224_Update(ctx, data, len) sha224_update(ctx, len, data)
+#define solv_SHA224_Final(md, ctx) sha224_digest(ctx, SHA224_DIGEST_SIZE, md)
+#define solv_SHA256_Init(ctx) sha256_init(ctx)
+#define solv_SHA256_Update(ctx, data, len) sha256_update(ctx, len, data)
+#define solv_SHA256_Final(md, ctx) sha256_digest(ctx, SHA256_DIGEST_SIZE, md)
+#define solv_SHA384_Init(ctx) sha384_init(ctx)
+#define solv_SHA384_Update(ctx, data, len) sha384_update(ctx, len, data)
+#define solv_SHA384_Final(md, ctx) sha384_digest(ctx, SHA384_DIGEST_SIZE, md)
+#define solv_SHA512_Init(ctx) sha512_init(ctx)
+#define solv_SHA512_Update(ctx, data, len) sha512_update(ctx, len, data)
+#define solv_SHA512_Final(md, ctx) sha512_digest(ctx, SHA512_DIGEST_SIZE, md)
 
 #else
 
