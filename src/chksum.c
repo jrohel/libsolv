@@ -75,6 +75,45 @@ typedef struct sha512_ctx SHA512_CTX;
 #define solv_SHA512_Update(ctx, data, len) sha512_update(ctx, len, data)
 #define solv_SHA512_Final(md, ctx) sha512_digest(ctx, SHA512_DIGEST_SIZE, md)
 
+#elif HASH_LIB == USE_GCRYPT
+
+#include <gcrypt.h>
+
+typedef gcry_md_hd_t MD5_CTX;
+typedef gcry_md_hd_t SHA1_CTX;
+typedef gcry_md_hd_t SHA224_CTX;
+typedef gcry_md_hd_t SHA256_CTX;
+typedef gcry_md_hd_t SHA384_CTX;
+typedef gcry_md_hd_t SHA512_CTX;
+
+static void
+hash_final(unsigned char *md, gcry_md_hd_t *ctx, int algo)
+{
+  unsigned char * tmp = gcry_md_read(*ctx, 0);
+  memcpy(md, tmp, gcry_md_get_algo_dlen(algo));
+  gcry_md_close(*ctx);
+  *ctx = NULL;
+}
+
+#define solv_MD5_Init(ctx) gcry_md_open(ctx, GCRY_MD_MD5, 0)
+#define solv_MD5_Update(ctx, data, len) gcry_md_write(*ctx, data, len)
+#define solv_MD5_Final(md, ctx) hash_final(md, ctx, GCRY_MD_MD5)
+#define solv_SHA1_Init(ctx) gcry_md_open(ctx, GCRY_MD_SHA1, 0)
+#define solv_SHA1_Update(ctx, data, len)  gcry_md_write(*ctx, data, len)
+#define solv_SHA1_Final(ctx, md) hash_final(md, ctx, GCRY_MD_SHA1)
+#define solv_SHA224_Init(ctx) gcry_md_open(ctx, GCRY_MD_SHA224, 0)
+#define solv_SHA224_Update(ctx, data, len)  gcry_md_write(*ctx, data, len)
+#define solv_SHA224_Final(md, ctx) hash_final(md, ctx, GCRY_MD_SHA224)
+#define solv_SHA256_Init(ctx) gcry_md_open(ctx, GCRY_MD_SHA256, 0)
+#define solv_SHA256_Update(ctx, data, len)  gcry_md_write(*ctx, data, len)
+#define solv_SHA256_Final(md, ctx) hash_final(md, ctx, GCRY_MD_SHA256)
+#define solv_SHA384_Init(ctx) gcry_md_open(ctx, GCRY_MD_SHA384, 0)
+#define solv_SHA384_Update(ctx, data, len)  gcry_md_write(*ctx, data, len)
+#define solv_SHA384_Final(md, ctx) hash_final(md, ctx, GCRY_MD_SHA384)
+#define solv_SHA512_Init(ctx) gcry_md_open(ctx, GCRY_MD_SHA512, 0)
+#define solv_SHA512_Update(ctx, data, len)  gcry_md_write(*ctx, data, len)
+#define solv_SHA512_Final(md, ctx) hash_final(md, ctx, GCRY_MD_SHA512)
+
 #else
 
 #include "md5.h"
@@ -133,7 +172,12 @@ solv_chksum_create(Id type)
 Chksum *
 solv_chksum_create_clone(Chksum *chk)
 {
-  return solv_memdup(chk, sizeof(*chk));
+  Chksum *clone = solv_memdup(chk, sizeof(*chk));
+#if HASH_LIB == USE_GCRYPT
+  if (chk->c.sha512)
+    gcry_md_copy(&clone->c.sha512, chk->c.sha512);
+#endif
+  return clone;
 }
 
 int
